@@ -1,35 +1,33 @@
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String randomString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt" +
-                " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi" +
-                " ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum" +
-                " dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia" +
-                " deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
-                " tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
-                " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse" +
-                " cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia" +
-                " deserunt mollit anim id est laborum.";
+        Scanner scanner = new Scanner(System.in);
+        List<LandPlot> landPlotList = new ArrayList<>();
 
-        System.out.println(textToDictionary(randomString));
+        for (int i = 0; i < 10000; i++) {
+            landPlotList.add(new LandPlot(Math.random() * 500 + 50, Math.random() * 500 + 50, (int) (Math.random() * 999999999 + 500000)));
+        }
 
-    }
+        while (true) {
+            System.out.println("Введите цену за кв. м. | \"end\" для выхода");
+            String response = scanner.nextLine();
 
-    private static List<String> textToDictionary(String s) {
-        return Stream.of(
-                s.replace(".", "")
-                .replace(",", "")
-                .toLowerCase()
-                .split(" "))
-                .map(text -> text.substring(0, 1).toUpperCase() + text.substring(1))
-                .distinct()
-                .sorted(Comparator.naturalOrder())
-                .collect(Collectors.toList());
+            if(response.equals("end")) break;
+
+            double price = 0;
+            try {
+                price = Double.parseDouble(response);
+            } catch (NumberFormatException e) {
+                e.getStackTrace();
+            }
+
+            List<LandPlot> result = CadastralHelper.getRecommendedPrice(landPlotList, price);
+            System.out.println("Найдено результатов: " + result.size());
+        }
     }
 }
